@@ -1,22 +1,39 @@
 #!/usr/bin/env groovy
 
-// KubernetesCredentialsID can be credentials of service account token or KubeConfig file 
-def call(String KubernetesCredentialsID, String kubeConfigFile, String kubeClusterurl, String kubeNamespace, String imageName) {
+/**
+ * Deploys an application to a Kubernetes cluster using KubeConfig as Secret Text.
+ *
+ * @param k8sCredentialsID Jenkins credentials ID for Kubernetes KubeConfig (Secret Text)
+ * @param imageName Docker image name with tag
+ */
+def call(String k8sCredentialsID, String imageName) {
     
-    // Update deployment.yaml with new Docker Hub image
+    // Update deployment.yaml with the new Docker image
+    echo " Updating deployment.yaml with image: ${imageName}:${BUILD_NUMBER}"
     sh "sed -i 's|image:.*|image: ${imageName}:${BUILD_NUMBER}|g' deployment.yaml"
 
-    // login to Kubernetes Cluster via kubeconfig file
-    withCredentials([file(credentialsId: "${KubernetesCredentialsID}", variable: 'KUBECONFIG_FILE')]) {
-        sh "export KUBECONFIG=\$KUBECONFIG_FILE && kubectl config set-cluster ${kubeClusterurl}"
-        sh "export KUBECONFIG=\$KUBECONFIG_FILE && kubectl config set-context --current --namespace=${kubeNamespace}"
-        sh "export KUBECONFIG=\$KUBECONFIG_FILE && kubectl apply -f ."
+    // Authenticate using Kubernetes KubeConfig as Secret Text
+    withCredentials([string(credentialsId: "${k8sCredentialsID}", variable: 'KUBECONFIG_CONTENT')]) {
+        echo " Using Kubernetes KubeConfig credentials: ${k8sCredentialsID}"
+        
+        // Save the secret text into a temporary kubeconfig file
+        sh '''
+        echo "$KUBECONFIG_CONTENT" > /tmp/kubeconfig.yaml
+        export KUBECONFIG=/tmp/kubeconfig.yaml
+        
+        echo " Validating Kubernetes Cluster Connection..."
+        kubectl cluster-info
+        kubectl get nodes
+        
+        echo " Applying Kubernetes manifests..."
+        kubectl apply -f .
+        
+        echo " Checking Deployment Rollout Status..."
+        kubectl rollout status deployment/ivolve1
+        
+        '''
     }
 
-    // Optional: login to Kubernetes Cluster via service account token
-    // withCredentials([string(credentialsId: 'KubernetesServiceAccountToken', variable: 'KUBERNETES_TOKEN')]) {
-    //     sh "kubectl --token=${KUBERNETES_TOKEN} --server=${kubeClusterurl} apply -f . -n ${kubeNamespace}"
-    // }
+    echo "Kubernetes Deployment completed successfully!"
 }
-
 
