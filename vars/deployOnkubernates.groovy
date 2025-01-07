@@ -1,7 +1,7 @@
 #!/usr/bin/env groovy
 
 // kubeconfigCredentialsID refers to the Jenkins credential ID for the kubeconfig file.
-def call(String kubeconfigCredentialsID, String kubernetesClusterURL, String kubernetesNamespace, String imageName) {
+def call(String kubeconfigCredentialsID, String imageName) {
     
     // Update deployment.yaml with the new Docker image
     sh "sed -i 's|image:.*|image: ${imageName}:${BUILD_NUMBER}|g' deployment.yaml"
@@ -14,10 +14,7 @@ def call(String kubeconfigCredentialsID, String kubernetesClusterURL, String kub
         # Check connection to the Kubernetes cluster
         kubectl cluster-info
 
-        # Switch to the desired namespace
-        kubectl config set-context --current --namespace=${kubernetesNamespace}
-
-        # Apply all YAML files in the current directory
+        # Apply all YAML files in the current directory to the default namespace
         kubectl apply -f .
         '''
     }
