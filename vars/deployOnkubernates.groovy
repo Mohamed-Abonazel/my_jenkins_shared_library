@@ -2,7 +2,7 @@
 
 def call(String kubeconfigCredentialsID, String kubernetesClusterURL, String imageName) {
     // Define the path to deployment.yaml
-    def deploymentYamlPath = "kubernetes/deployment.yaml"
+    def deploymentYamlPath = "Kubernetes/deployment.yaml"
     
     // Update the deployment.yaml image tag with the current build number
     sh """
