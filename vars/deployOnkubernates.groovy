@@ -1,4 +1,4 @@
-// vars/deployStage.groovy
+#!usr/bin/env groovy
 def call(kubeconfigPath, deploymentYaml) {
     echo "Deploying the application to Kubernetes"
     sh "kubectl --kubeconfig=${kubeconfigPath} apply -f ${deploymentYaml}"
