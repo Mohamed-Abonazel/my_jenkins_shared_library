@@ -13,7 +13,7 @@ def call(String kubeconfigCredentialsID, String kubernetesClusterURL, String ima
             echo "Using Kubernetes Cluster at ${kubernetesClusterURL}"
             kubectl cluster-info --server=${kubernetesClusterURL}
             kubectl apply -f .
-            kubectl rollout status deployment/$(kubectl get deployment -o=jsonpath='{.items[0].metadata.name}')
+            kubectl rollout status deployment/\$(kubectl get deployment -o=jsonpath='{.items[0].metadata.name}')
         """
     }
     
