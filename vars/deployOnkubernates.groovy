@@ -1,6 +1,6 @@
 #!/usr/bin/env groovy
 
-def call (String kubeconfigCredentialsID, String kubernetesClusterURL, String imageName) {
+def call(String kubeconfigCredentialsID, String kubernetesClusterURL, String imageName) {
     // Define the path to deployment.yaml
     def deploymentYamlPath = "Kubernetes/deployment.yaml"
     
@@ -17,7 +17,7 @@ def call (String kubeconfigCredentialsID, String kubernetesClusterURL, String im
     // Use Kubernetes credentials to apply the deployment
     withCredentials([file(credentialsId: kubeconfigCredentialsID, variable: 'KUBECONFIG_FILE')]) {
         sh """
-            export KUBECONFIG=\$KUBECONFIG_FILE
+            export KUBECONFIG=${KUBECONFIG_FILE}
             echo "Using Kubernetes Cluster at ${kubernetesClusterURL}"
             kubectl cluster-info --server=${kubernetesClusterURL}
             kubectl apply -f ${deploymentYamlPath}
