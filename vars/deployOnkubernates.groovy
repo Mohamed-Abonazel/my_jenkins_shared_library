@@ -1,6 +1,6 @@
 #!/usr/bin/env groovy
 
-def deployOnkubernates(String kubeconfigCredentialsID, String kubernetesClusterURL, String imageName) {
+def call (String kubeconfigCredentialsID, String kubernetesClusterURL, String imageName) {
     // Define the path to deployment.yaml
     def deploymentYamlPath = "Kubernetes/deployment.yaml"
     
