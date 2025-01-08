@@ -17,7 +17,7 @@ def call(String kubeconfigCredentialsID, String kubernetesClusterURL, String ima
     // Use Kubernetes credentials to apply the deployment
     withCredentials([file(credentialsId: kubeconfigCredentialsID, variable: 'KUBECONFIG_FILE')]) {
         sh """
-            export KUBECONFIG=${KUBECONFIG_FILE}
+            export KUBECONFIG=~/.kube/config
             echo "Using Kubernetes Cluster at ${kubernetesClusterURL}"
             kubectl cluster-info --server=${kubernetesClusterURL}
             kubectl apply -f ${deploymentYamlPath}
