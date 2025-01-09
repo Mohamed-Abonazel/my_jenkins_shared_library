@@ -28,9 +28,9 @@ def call(String kubeconfigCredentialsID, String kubernetesClusterURL, String ima
                 kubectl config set-credentials my-user --client-certificate=${KUBERNETES_CLIENT_CERT} --client-key=${KUBERNETES_CLIENT_KEY}
                 kubectl config set-context my-context --cluster=my-cluster --user=my-user
                 kubectl config use-context my-context
-                kubectl cluster-info
-                kubectl apply -f ${deploymentYamlPath}
-                kubectl rollout status deployment/\$(kubectl get deployment -o=jsonpath='{.items[0].metadata.name}')
+                kubectl cluster-info || { echo "Cluster info failed"; exit 1; }
+                kubectl apply -f ${deploymentYamlPath} || { echo "Kubectl apply failed"; exit 1; }
+                kubectl rollout status deployment/\$(kubectl get deployment -o=jsonpath='{.items[0].metadata.name}') || { echo "Rollout failed"; exit 1; }
             """
         }
     }
@@ -38,5 +38,4 @@ def call(String kubeconfigCredentialsID, String kubernetesClusterURL, String ima
     // Echo a success message to indicate deployment completion
     echo "Deployment to Kubernetes Cluster completed successfully."
 }
-
 
