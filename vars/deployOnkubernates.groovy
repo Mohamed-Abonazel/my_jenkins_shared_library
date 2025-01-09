@@ -1,6 +1,6 @@
 #!/usr/bin/env groovy
 
-def call(String kubeconfigCredentialsID, String kubernetesClusterURL, String imageName, String caCertContent, String clientCertContent, String clientKeyContent) {
+def call(String kubeconfigCredentialsID, String kubernetesClusterURL, String imageName, String minikubeCACertID, String minikubeClientCertID , String minikubeClientKeyID) {
     // Define the path to deployment.yaml
     def deploymentYamlPath = "Kubernetes/deployment.yaml"
     
@@ -18,9 +18,9 @@ def call(String kubeconfigCredentialsID, String kubernetesClusterURL, String ima
     withCredentials([file(credentialsId: kubeconfigCredentialsID, variable: 'KUBECONFIG_FILE')]) {
         // Set up the Kubernetes certificates for secure communication using environment variables
         withEnv([
-            "KUBERNETES_CA_CERT=${caCertContent}",
-            "KUBERNETES_CLIENT_CERT=${clientCertContent}",
-            "KUBERNETES_CLIENT_KEY=${clientKeyContent}"
+            "KUBERNETES_CA_CERT=${minikubeCACertID}",
+            "KUBERNETES_CLIENT_CERT=${minikubeClientCertID}",
+            "KUBERNETES_CLIENT_KEY=${minikubeClientKeyID}"
         ]) {
             sh """
                 echo "Using Kubernetes Cluster at ${kubernetesClusterURL}"
