@@ -20,7 +20,6 @@ def call(String kubeconfigCredentialsID, String kubernetesClusterURL, String ima
          {
             sh """
                 echo "Using Kubernetes Cluster at ${kubernetesClusterURL}"
-                kubectl config use-context my-context
                 kubectl cluster-info || { echo "Cluster info failed"; exit 1; }
                 kubectl apply -f ${deploymentYamlPath} || { echo "Kubectl apply failed"; exit 1; }
                 kubectl rollout status deployment/\$(kubectl get deployment -o=jsonpath='{.items[0].metadata.name}') || { echo "Rollout failed"; exit 1; }
