@@ -24,9 +24,6 @@ def call(String kubeconfigCredentialsID, String kubernetesClusterURL, String ima
         ]) {
             sh """
                 echo "Using Kubernetes Cluster at ${kubernetesClusterURL}"
-                kubectl config set-cluster my-cluster --server=${kubernetesClusterURL} --certificate-authority=${KUBERNETES_CA_CERT}
-                kubectl config set-credentials my-user --client-certificate=${KUBERNETES_CLIENT_CERT} --client-key=${KUBERNETES_CLIENT_KEY}
-                kubectl config set-context my-context --cluster=my-cluster --user=my-user
                 kubectl config use-context my-context
                 kubectl cluster-info || { echo "Cluster info failed"; exit 1; }
                 kubectl apply -f ${deploymentYamlPath} || { echo "Kubectl apply failed"; exit 1; }
