@@ -18,7 +18,8 @@ def call(String kubeconfigCredentialsID, String kubernetesClusterURL, String ima
     withCredentials([file(credentialsId: kubeconfigCredentialsID, variable: 'KUBECONFIG_FILE')]) {
         // Export the KUBECONFIG and run cluster info
         sh """
-            export KUBECONFIG=$KUBECONFIG_FILE
+            echo "KUBECONFIG path is: ${KUBECONFIG}"
+
             kubectl cluster-info || { echo "Cluster info failed"; exit 1; }
         """
 
