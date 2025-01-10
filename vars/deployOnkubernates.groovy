@@ -16,12 +16,8 @@ def call(String kubeconfigCredentialsID, String kubernetesClusterURL, String ima
     
     // Use Kubernetes credentials and certificates to apply the deployment
     withCredentials([file(credentialsId: kubeconfigCredentialsID, variable: 'KUBECONFIG_FILE')]) {
-        // Set up the Kubernetes certificates for secure communication using environment variables
-        withEnv([
-            "KUBERNETES_CA_CERT=${minikubeCACertID}",
-            "KUBERNETES_CLIENT_CERT=${minikubeClientCertID}",
-            "KUBERNETES_CLIENT_KEY=${minikubeClientKeyID}"
-        ]) {
+        
+         {
             sh """
                 echo "Using Kubernetes Cluster at ${kubernetesClusterURL}"
                 kubectl config use-context my-context
