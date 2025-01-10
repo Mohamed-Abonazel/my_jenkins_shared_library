@@ -15,7 +15,7 @@ def call(String kubeconfigCredentialsID, String kubernetesClusterURL, String ima
     """
     
     // Use Kubernetes credentials and certificates to apply the deployment
-    withCredentials([file(credentialsId: kubeconfigCredentialsID, variable: 'KUBECONFIG_FILE')]) {
+    withCredentials([file(credentialsId: kubeconfigCredentialsID, variable: 'KUBECONFIG_FILE')]) 
         
          {
             sh """
@@ -26,7 +26,7 @@ def call(String kubeconfigCredentialsID, String kubernetesClusterURL, String ima
                 kubectl rollout status deployment/\$(kubectl get deployment -o=jsonpath='{.items[0].metadata.name}') || { echo "Rollout failed"; exit 1; }
             """
         }
-    }
+    
     
     // Echo a success message to indicate deployment completion
     echo "Deployment to Kubernetes Cluster completed successfully."
