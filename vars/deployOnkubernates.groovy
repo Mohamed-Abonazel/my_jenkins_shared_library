@@ -16,7 +16,12 @@ def call(String kubeconfigCredentialsID, String kubernetesClusterURL, String ima
     
     // Use Kubernetes credentials and certificates to apply the deployment
     withCredentials([file(credentialsId: kubeconfigCredentialsID, variable: 'KUBECONFIG_FILE')]) 
-        
+        // Export the KUBECONFIG and run cluster info
+        sh """
+            export KUBECONFIG=$KUBECONFIG_FILE
+            kubectl cluster-info || { echo "Cluster info failed"; exit 1; }
+        """
+
          {
             sh """
                 echo "Using Kubernetes Cluster at ${kubernetesClusterURL}"
